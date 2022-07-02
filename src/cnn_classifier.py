@@ -30,8 +30,6 @@ def data_processing(train, test):
     test_data = test_dataset.getData()
     test_labels = test_dataset.getLabels()
 
-    train_data = Processing.reshape_data(train_data, 256, 256, 1)
-    test_data = Processing.reshape_data(test_data, 256, 256, 1)
     #train_labels = Processing.reshape_data(train_labels, 256, 256, 1)
     #test_labels = Processing.reshape_data(test_labels, 256, 256, 1)
 
@@ -48,10 +46,8 @@ def main():
     data_info('Train', train, train_l)
     data_info('Test', test, test_l)
 
-    (X, Y, XL, YL) = Processing.split_data(train, train_l, rand_state=0)
-
-    NN = Keras(X, Y, XL, YL)
-    NN.train_network(batch=256, iteration=2)
+    NN = Keras(train, train_l)
+    NN.train_network(batch=768, iteration=20, verb=1)
 
 if __name__ == '__main__':
     main()

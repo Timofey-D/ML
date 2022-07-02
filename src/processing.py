@@ -65,7 +65,8 @@ class Processing:
         """
         # To reshape data
         data = np.array(data)
-        return data.reshape((data.shape[0], width, height, channels))
+        print(data.shape)
+        return data.reshape(data.shape[0], width, height, channels)
         
 
     # To get a normalized image
@@ -124,7 +125,7 @@ class Processing:
             pieces = Processing.__split_image__(open_image, stepSize, (h, w))
 
             for piece in pieces:
-                image = Processing.__normalize_image__(piece[2], 256, 256)
+                image = Processing.__normalize_image__(piece[2], 100, 100)
                 self.labels.extend(repeat(path.split(os.sep)[-3], 1))
                 self.data.append(image)
 
@@ -136,4 +137,3 @@ class Processing:
         for y in range(0, image.shape[0], stepSize):
             for x in range(0, image.shape[1], stepSize):
                 yield (x, y, image[y:y + windowSize[1], x:x + windowSize[0]])
-
