@@ -116,18 +116,21 @@ class Processing:
         cv2.destroyAllWindows()
 
     # To get a normalized data
-    def data_normalization(self, stepSize, h=400, w=400):
+    def data_normalization(self, stepSize, fh, fw, sh, sw):
         """
 
         """
         for path in self.raw_data:
             open_image = Processing.open_image(path)
-            pieces = Processing.__split_image__(open_image, stepSize, (h, w))
+            pieces = Processing.__split_image__(open_image, stepSize, (fh, fw))
 
             for piece in pieces:
-                image = Processing.__normalize_image__(piece[2], 256, 256)
+                image = Processing.__normalize_image__(piece[2], sh, sw)
                 self.labels.extend(repeat(path.split(os.sep)[-3], 1))
                 self.data.append(image)
+
+            #§if len(self.data) > 36000:
+            #    break
 
         self.data = np.array(self.data)
 

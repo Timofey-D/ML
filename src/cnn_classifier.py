@@ -27,17 +27,21 @@ def data_processing(train, test):
     train_dataset = Processing(train)
     test_dataset = Processing(test)
 
+    f_split = [256, 400, 400]
+    s_split = [256, 256]
+
     # To normalize a train data and labels
-    train_dataset.data_normalization(200, 400, 400)
+    train_dataset.data_normalization(f_split[0], f_split[1], f_split[2], s_split[0], s_split[1])
     train_data = train_dataset.getData()
     train_labels = train_dataset.getLabels()
 
     # To normalize a test data and labels
-    test_dataset.data_normalization(200, 400, 400)
+    test_dataset.data_normalization(f_split[0], f_split[1], f_split[2], s_split[0], s_split[1])
     test_data = test_dataset.getData()
     test_labels = test_dataset.getLabels()
 
     train_data = Processing.reshape_data(train_data, 256, 256, 1)
+    test_data = Processing.reshape_data(test_data, 256, 256, 1)
 
     #train_labels = Processing.reshape_data(train_labels, 256, 256, 1)
     #test_labels = Processing.reshape_data(test_labels, 256, 256, 1)
@@ -55,8 +59,15 @@ def main():
     data_info('Train', train, train_l)
     data_info('Test', test, test_l)
 
-    NN = Keras(train, train_l)
-    NN.train_network(batch=1024, iteration=20, verb=1)
+    NN = Keras(train, train_l, test, test_l)
+    NN.train_network(batch=64, iteration=20, verb=1)
+
+    report = NN.get_report()
+
+    print(report['prediction'])
+    print(report['accuracy'])
+    print(report['confusion matrix'])
+    print(report['classification report'])
 
 if __name__ == '__main__':
     main()
