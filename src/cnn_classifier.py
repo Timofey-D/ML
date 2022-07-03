@@ -64,7 +64,6 @@ def main():
 
     report = NN.get_report()
 
-    print('Prediction:', report['prediction'])
     print('Accuracy:', report['accuracy'])
     print(report['confusion matrix'])
     print(report['classification report'])
