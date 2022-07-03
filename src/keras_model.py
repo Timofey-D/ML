@@ -13,29 +13,11 @@ from tensorflow.keras.applications import vgg16
 
 
 class Keras:
-    def __init__(self, _type, train, train_l, test, test_l, optimizer_f='adam', loss_f='binary_crossentropy', metric='accuracy', input_shape=(256, 256, 1)):
+    def __init__(self, _type, optimizer_f='adam', loss_f='binary_crossentropy', metric='accuracy', input_shape=(256, 256, 1)):
 
-        # Change each value of the array to float
-        self.train = train.astype('float32')
-        self.test = test.astype('float32')
-
-        # Change the labels from integer to categorical data
-        #self.cat_train_l = to_categorical(train_l)
-        #self.cat_valid_l = to_categorical(valid_l)
-
-        lb = LabelBinarizer()
-        labels = lb.fit_transform(train_l)
-        self.cat_train_l = to_categorical(labels)
-
-        lb = LabelBinarizer()
-        labels = lb.fit_transform(test_l)
-        self.cat_test_l = to_categorical(labels)
-        #labels = lb.fit_transform(valid_l)
-        #self.cat_valid_l = to_categorical(labels)
-        
         self.NN = Sequential()
         if _type == "CNN":
-            self.__structure__(input_shape)
+            self.__CNN__(input_shape)
         elif _type == "VGG16":
             self.__VGG16__(input_shape)
         elif _type == "Xception":
@@ -47,7 +29,7 @@ class Keras:
     def model_info(self):
         print(self.NN.summary())
 
-    def __CNN__(self, shape=(256, 256, 1)):
+    def __CNN__(self, shape):
 
         self.NN.add(layers.Conv2D(32, kernel_size=(3, 3), padding='same', input_shape=shape, activation='relu'))
         self.NN.add(layers.Conv2D(32, kernel_size=(3, 3), padding='same', activation='relu'))
@@ -69,23 +51,24 @@ class Keras:
         self.NN.add(Dropout(0.5))
         self.NN.add(Dense(2, activation='sigmoid'))
         
-    def __VGG16__(self, shape=(256, 256, 3)):
+    def __VGG16__(self, shape):
+
         vgg_conv = vgg16.VGG16(weights='imagenet', include_top=False, input_shape=shape)
-        model.add(vgg_conv)
+        self.NN.add(vgg_conv)
 
         self.NN.add(layers.Conv2D(32, kernel_size=(3, 3), padding='same', input_shape=shape, activation='relu'))
         self.NN.add(layers.Conv2D(32, kernel_size=(3, 3), padding='same', activation='relu'))
-        self.NN.add(layers.MaxPool2D())
+        #self.NN.add(layers.MaxPool2D())
         self.NN.add(Dropout(0.25))
 
         self.NN.add(layers.Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu'))
         self.NN.add(layers.Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu'))
-        self.NN.add(layers.MaxPool2D())
+        #self.NN.add(layers.MaxPool2D())
         self.NN.add(Dropout(0.25))
 
         self.NN.add(layers.Conv2D(128, kernel_size=(3, 3), padding='same', activation='relu'))
         self.NN.add(layers.Conv2D(128, kernel_size=(3, 3), padding='same', activation='relu'))
-        self.NN.add(layers.MaxPool2D())
+        #self.NN.add(layers.MaxPool2D())
         self.NN.add(Dropout(0.25))
         
         self.NN.add(layers.Flatten())
@@ -116,6 +99,25 @@ class Keras:
         self.NN.add(Dense(512))
         self.NN.add(Dropout(0.5))
         self.NN.add(Dense(2, activation='sigmoid'))
+
+    def data_preparation(self, train, train_l, test, test_l):
+        # Change each value of the array to float
+        self.train = train.astype('float32')
+        self.test = test.astype('float32')
+
+        # Change the labels from integer to categorical data
+        #self.cat_train_l = to_categorical(train_l)
+        #self.cat_valid_l = to_categorical(valid_l)
+
+        lb = LabelBinarizer()
+        labels = lb.fit_transform(train_l)
+        self.cat_train_l = to_categorical(labels)
+
+        lb = LabelBinarizer()
+        labels = lb.fit_transform(test_l)
+        self.cat_test_l = to_categorical(labels)
+        #labels = lb.fit_transform(valid_l)
+        #self.cat_valid_l = to_categorical(labels)
 
     def train_network(self, batch=32, iteration=100, verb=1):
         generator = ImageDataGenerator(

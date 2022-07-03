@@ -4,6 +4,7 @@ from preprocessing import Preprocessing
 from processing import Processing
 from keras_model import Keras
 import tensorflow as tf
+import numpy as np
 
 
 #os.environ["CUDA_VISIBLE_DEVICES"] = '0' #Specify that the first GPU is available
@@ -55,13 +56,37 @@ def data_info(name, data, labels):
 
 def main():
     data_train, data_test = data_preprocessing(sys.argv[1])
-    (train, train_l, test, test_l) = data_processing(data_train, data_test, 32, 32, 1)
+    (train, train_l, test, test_l) = data_processing(data_train, data_test, 256, 256, 1)
 
     data_info('Train', train, train_l)
     data_info('Test', test, test_l)
 
-    NN = Keras('VGG16', train, train_l, test, test_l, input_shape=(32, 32, 3))
-    NN.train_network(batch=64, iteration=20, verb=1)
+    NN = Keras('CNN', input_shape=(256, 256, 1))
+
+    start = 0
+    stop = 0
+    step = 1000
+
+    it = len(train) // step
+
+    for epoch in range(it):
+
+        diff = len(train) - start 
+
+        if diff > step:
+            stop += step
+        else:
+            stop += diff
+
+        temp_train = np.array(train[start:stop])
+        temp_labels = np.array(train_l[start:stop])
+
+        data_info('Temp train', temp_train, temp_labels)
+
+        NN.data_preparation(temp_train, temp_labels, test, test_l)
+        NN.train_network(batch=128, iteration=20, verb=1)
+
+        start += step
 
     report = NN.get_report()
 
