@@ -125,7 +125,7 @@ class Processing:
             pieces = Processing.__split_image__(open_image, stepSize, (h, w))
 
             for piece in pieces:
-                image = Processing.__normalize_image__(piece[2], 100, 100)
+                image = Processing.__normalize_image__(piece[2], 256, 256)
                 self.labels.extend(repeat(path.split(os.sep)[-3], 1))
                 self.data.append(image)
 

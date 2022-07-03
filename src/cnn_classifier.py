@@ -3,7 +3,14 @@ import sys
 from preprocessing import Preprocessing
 from processing import Processing
 from keras_model import Keras
+import tensorflow as tf
 
+
+#os.environ["CUDA_VISIBLE_DEVICES"] = '0' #Specify that the first GPU is available
+#config = tf.ConfigProto()
+#config.gpu_options.per_process_gpu_memory_fraction = 0.5 # The program can only occupy up to 50% of the video memory of the specified gpu
+#config.gpu_options.allow_growth = True #The program applies for memory on demand
+#sess = tf.Session(config=config)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
 def data_preprocessing(datadir):
@@ -30,6 +37,8 @@ def data_processing(train, test):
     test_data = test_dataset.getData()
     test_labels = test_dataset.getLabels()
 
+    train_data = Processing.reshape_data(train_data, 256, 256, 1)
+
     #train_labels = Processing.reshape_data(train_labels, 256, 256, 1)
     #test_labels = Processing.reshape_data(test_labels, 256, 256, 1)
 
@@ -47,7 +56,7 @@ def main():
     data_info('Test', test, test_l)
 
     NN = Keras(train, train_l)
-    NN.train_network(batch=768, iteration=20, verb=1)
+    NN.train_network(batch=1024, iteration=20, verb=1)
 
 if __name__ == '__main__':
     main()

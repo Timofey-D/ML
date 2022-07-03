@@ -9,6 +9,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 from tensorflow.keras.utils import to_categorical
 from matplotlib import pyplot as plt
 from sklearn.preprocessing import LabelBinarizer
+from aibro import Training 
 
 
 class Keras:
@@ -38,7 +39,7 @@ class Keras:
 
     def __structure__(self):
 
-        self.NN.add(layers.Conv2D(32, kernel_size=(3, 3), padding='same', input_shape=(100, 100, 1), activation='relu'))
+        self.NN.add(layers.Conv2D(32, kernel_size=(3, 3), padding='same', input_shape=(256, 256, 1), activation='relu'))
         self.NN.add(layers.Conv2D(32, kernel_size=(3, 3), padding='same', activation='relu'))
         self.NN.add(layers.MaxPool2D())
         self.NN.add(Dropout(0.25))
@@ -60,13 +61,22 @@ class Keras:
 
 
     def train_network(self, batch=32, iteration=100, verb=1):
+        from aibro import Training 
+        #self.trained = Training.online_fit(model, train_X, train_Y, machine_id= ['p3.16xlarge.od'])
+        #self.trained = Training.online_fit(self.train, self.cat_train_l, machine_id= ['p3.16xlarge.od'])
+        generator = ImageDataGenerator(
+            horizontal_flip=False,
+            vertical_flip=False,
+        )
+
         self.trained = self.NN.fit(
-                self.train, 
+                generator.flow(self.train, self.cat_train_l, batch_size=1024),
                 #[self.cat_train_l[:, 1], self.cat_train_l[:, 2]],
-                self.cat_train_l, 
+                #self.cat_train_l, 
                 batch_size=batch, 
                 epochs=iteration, 
                 verbose=verb, 
+                workers=5
                 #validation_data=(self.valid, self.cat_valid_l)
         )
 
