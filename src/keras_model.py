@@ -12,11 +12,11 @@ from sklearn.preprocessing import LabelBinarizer
 
 
 class Keras:
-    def __init__(self, train, train_l, test, test_l, optimizer_f='adam', loss_f='binary_crossentropy', metric='accuracy'):
+    def __init__(self, train, train_l, test, test_l, optimizer_f='adam', loss_f='binary_crossentropy', metric='accuracy', input_shape=(256, 256, 1)):
 
         # Change each value of the array to float
         self.train = train.astype('float32')
-        self.valid = test.astype('float32')
+        self.test = test.astype('float32')
 
         # Change the labels from integer to categorical data
         #self.cat_train_l = to_categorical(train_l)
@@ -33,16 +33,16 @@ class Keras:
         #self.cat_valid_l = to_categorical(labels)
         
         self.NN = Sequential()
-        self.__structure__()
+        self.__structure__(input_shape)
         self.NN.compile(optimizer=optimizer_f, loss=loss_f, metrics=[metric])
         
 
     def model_info(self):
         print(self.NN.summary())
 
-    def __structure__(self):
+    def __structure__(self, shape=(256, 256, 1)):
 
-        self.NN.add(layers.Conv2D(32, kernel_size=(3, 3), padding='same', input_shape=(256, 256, 1), activation='relu'))
+        self.NN.add(layers.Conv2D(32, kernel_size=(3, 3), padding='same', input_shape=shape, activation='relu'))
         self.NN.add(layers.Conv2D(32, kernel_size=(3, 3), padding='same', activation='relu'))
         self.NN.add(layers.MaxPool2D())
         self.NN.add(Dropout(0.25))
@@ -61,6 +61,7 @@ class Keras:
         self.NN.add(Dense(512))
         self.NN.add(Dropout(0.5))
         self.NN.add(Dense(2, activation='sigmoid'))
+        
 
 
     def train_network(self, batch=32, iteration=100, verb=1):

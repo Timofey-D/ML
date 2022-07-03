@@ -65,7 +65,6 @@ class Processing:
         """
         # To reshape data
         data = np.array(data)
-        print(data.shape)
         return data.reshape(data.shape[0], width, height, channels)
         
 
