@@ -22,13 +22,13 @@ def data_preprocessing(datadir):
 
     return (train, test)
 
-def data_processing(train, test):
+def data_processing(train, test, fH, fW, fch):
     # To prepare a data for a process of the training
     train_dataset = Processing(train)
     test_dataset = Processing(test)
 
     f_split = [256, 400, 400]
-    s_split = [64, 64]
+    s_split = [fH, fW]
 
     # To normalize a train data and labels
     train_dataset.data_normalization(f_split[0], f_split[1], f_split[2], s_split[0], s_split[1])
@@ -40,8 +40,9 @@ def data_processing(train, test):
     test_data = test_dataset.getData()
     test_labels = test_dataset.getLabels()
 
-    train_data = Processing.reshape_data(train_data, 64, 64, 1)
-    test_data = Processing.reshape_data(test_data, 64, 64, 1)
+    reshaping = [fH, fW, fch]
+    train_data = Processing.reshape_data(train_data, reshaping[0], reshaping[1], reshaping[2])
+    test_data = Processing.reshape_data(test_data, reshaping[0], reshaping[1], reshaping[2])
 
     #train_labels = Processing.reshape_data(train_labels, 256, 256, 1)
     #test_labels = Processing.reshape_data(test_labels, 256, 256, 1)
@@ -54,12 +55,12 @@ def data_info(name, data, labels):
 
 def main():
     data_train, data_test = data_preprocessing(sys.argv[1])
-    (train, train_l, test, test_l) = data_processing(data_train, data_test)
+    (train, train_l, test, test_l) = data_processing(data_train, data_test, 256, 256, 1)
 
     data_info('Train', train, train_l)
     data_info('Test', test, test_l)
 
-    NN = Keras(train, train_l, test, test_l, input_shape=(64, 64, 1))
+    NN = Keras(train, train_l, test, test_l, input_shape=(256, 256, 1))
     NN.train_network(batch=64, iteration=20, verb=1)
 
     report = NN.get_report()
