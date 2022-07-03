@@ -27,7 +27,7 @@ def data_processing(train, test, fH, fW, fch):
     train_dataset = Processing(train)
     test_dataset = Processing(test)
 
-    f_split = [256, 400, 400]
+    f_split = [200, 400, 400]
     s_split = [fH, fW]
 
     # To normalize a train data and labels
@@ -55,12 +55,12 @@ def data_info(name, data, labels):
 
 def main():
     data_train, data_test = data_preprocessing(sys.argv[1])
-    (train, train_l, test, test_l) = data_processing(data_train, data_test, 256, 256, 1)
+    (train, train_l, test, test_l) = data_processing(data_train, data_test, 32, 32, 1)
 
     data_info('Train', train, train_l)
     data_info('Test', test, test_l)
 
-    NN = Keras(train, train_l, test, test_l, input_shape=(256, 256, 1))
+    NN = Keras('VGG16', train, train_l, test, test_l, input_shape=(32, 32, 3))
     NN.train_network(batch=64, iteration=20, verb=1)
 
     report = NN.get_report()
