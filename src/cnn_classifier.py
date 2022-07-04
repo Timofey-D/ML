@@ -56,12 +56,12 @@ def data_info(name, data, labels):
 
 def main():
     data_train, data_test = data_preprocessing(sys.argv[1])
-    (train, train_l, test, test_l) = data_processing(data_train, data_test, 256, 256, 1)
+    (train, train_l, test, test_l) = data_processing(data_train, data_test, 64, 64, 3)
 
     data_info('Train', train, train_l)
     data_info('Test', test, test_l)
 
-    NN = Keras('CNN', input_shape=(256, 256, 1))
+    NN = Keras('VGG16', input_shape=(64, 64, 3))
     NN.data_preparation(train, train_l, test, test_l)
     NN.train_network(batch=256, iteration=20, verb=1)
 

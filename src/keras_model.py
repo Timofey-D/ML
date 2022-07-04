@@ -121,16 +121,22 @@ class Keras:
 
     def train_network(self, batch=32, iteration=100, verb=1):
         generator = ImageDataGenerator(
+           # width_shift_range=0.1,
+           # height_shift_range=0.1,
             horizontal_flip=False,
             vertical_flip=False,
+           # rotation_range=10,
+           # shear_range=0.2,
+           # brightness_range=(0.2, 1.8),
+           # rescale=1. / 255
         )
 
         self.trained = self.NN.fit(
-                generator.flow(self.train, self.cat_train_l, batch_size=64),
+                generator.flow(self.train, self.cat_train_l, batch_size=batch),
                 batch_size=batch, 
                 epochs=iteration, 
                 verbose=verb, 
-                workers=5
+                workers=2
         )
 
     def get_report(self):

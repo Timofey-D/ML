@@ -42,7 +42,7 @@ class Preprocessing:
                     self.train += [os.path.join(image_path, os.listdir(image_path)[ind]) for ind in range(100)]
                 elif datadir == 'test':
                     self.y_labels.extend(repeat(label, number_of_images))
-                    self.test += [os.path.join(image_path, os.listdir(image_path)[ind]) for ind in range(100)]
+                    self.test += [os.path.join(image_path, os.listdir(image_path)[ind]) for ind in range(180)]
 
     def __check_path__(self, dirdata):
         path = None

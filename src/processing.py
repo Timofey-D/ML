@@ -98,7 +98,7 @@ class Processing:
         """
         try:
             # To open an image
-            image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+            image = cv2.imread(image_path, cv2.IMREAD_COLOR)
         except:
             print("The path:", image_path)
             raise Exception("The file wasn\'t found or the file doesn't exist!")
