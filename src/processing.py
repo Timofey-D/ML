@@ -126,7 +126,9 @@ class Processing:
             for piece in pieces:
                 image = Processing.__normalize_image__(piece[2], sh, sw)
                 self.labels.extend(repeat(path.split(os.sep)[-3], 1))
+                #print(piece.shape)
                 self.data.append(image)
+                #self.data.append(piece[2])
 
             #§if len(self.data) > 36000:
             #    break

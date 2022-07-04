@@ -62,31 +62,8 @@ def main():
     data_info('Test', test, test_l)
 
     NN = Keras('CNN', input_shape=(256, 256, 1))
-
-    start = 0
-    stop = 0
-    step = 1000
-
-    it = len(train) // step
-
-    for epoch in range(it):
-
-        diff = len(train) - start 
-
-        if diff > step:
-            stop += step
-        else:
-            stop += diff
-
-        temp_train = np.array(train[start:stop])
-        temp_labels = np.array(train_l[start:stop])
-
-        data_info('Temp train', temp_train, temp_labels)
-
-        NN.data_preparation(temp_train, temp_labels, test, test_l)
-        NN.train_network(batch=128, iteration=20, verb=1)
-
-        start += step
+    NN.data_preparation(train, train_l, test, test_l)
+    NN.train_network(batch=256, iteration=20, verb=1)
 
     report = NN.get_report()
 
